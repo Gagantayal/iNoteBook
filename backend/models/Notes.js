@@ -1,6 +1,10 @@
 const mongoose = require("mongoose")
 strictPopulate=false
 const UserTask = new mongoose.Schema({
+    user:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'USERS'
+    },
     title:{
         type:String,
         required:true
