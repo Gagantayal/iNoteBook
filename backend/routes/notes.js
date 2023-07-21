@@ -35,4 +35,45 @@ router.post('/addnote',fetchuser,[
         }
 })
 
-module.exports = router
+router.put('/updatenote/:id',fetchuser, async (req,res)=>{
+        try{
+        const {title,description,tag} = req.body
+        var newnotes = {};
+        if(title){newnotes.title = title}
+        if(description){newnotes.description = description}
+        if(tag){newnotes.tag= tag}
+        let note = await Note.findById(req.params.id)
+        if(!note){
+               return res.status(400).send("not found")
+        }
+        if(note.user.toString() !== req.user.id){
+                return res.status(400).send("not allowed")
+        }
+        note = await Note.findByIdAndUpdate(req.params.id, {$set:newnotes},{new:true})
+        res.json({note}); 
+}
+        catch(error){
+                console.error(error.message)
+                res.status(500).json("internal server error") 
+        }
+})
+
+router.delete('/deletenote/:id',fetchuser, async (req,res)=>{
+        try{
+        let note = await Note.findById(req.params.id)
+        if(!note){
+               return res.status(400).send("not found")
+        }
+        if(note.user.toString() !== req.user.id){
+                return res.status(400).send("not allowed")
+        }
+        note = await Note.findByIdAndDelete(req.params.id)
+        res.json({"success":"note deleted", note:note})
+        }
+        catch(error){
+                console.error(error.message)
+                res.status(500).json("internal server error") 
+        }
+})
+
+module.exports = router  
