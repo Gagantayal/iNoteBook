@@ -1,6 +1,12 @@
 import React, { useEffect } from 'react'
-import {Link, useLocation} from "react-router-dom";
-const Navbar = () => {
+import {Link, useLocation, useNavigate} from "react-router-dom";
+const Navbar = (props) => {
+  let navigate = useNavigate()
+  const handleLogout = ()=>{
+    localStorage.removeItem('token')
+    navigate("/login")
+    props.showAlert("Logout Successfully","success")
+  }
   let location = useLocation();
   useEffect(()=>{
     console.log(location);}
@@ -23,6 +29,8 @@ const Navbar = () => {
         </li>
       </ul>
     </div>
+    {!localStorage.getItem('token')?<><Link className="btn btn-primary mx-2" to="/login" role="button">Login</Link>
+    <Link className="btn btn-primary mx-2" to="/signup" role="button">Signup</Link></>:<button onClick={handleLogout} className='btn btn-primary'>Logout</button>} 
   </div>
 </nav>
       </>      
